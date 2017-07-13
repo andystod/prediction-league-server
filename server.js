@@ -8,6 +8,8 @@ var schema = buildSchema(`
     id: String
     name: String
     predictions: [Team]
+    email: String
+    telephone: String
   }
 
   type Team {
@@ -16,15 +18,11 @@ var schema = buildSchema(`
   }
 
   type Query {
-    user(id: String): User
+    user(id: String): User,
+    team(id: String): Team
   }
 `);
 
-// Maps id to User object
-const users = [ 
-  { id: 'a', name: 'Andrew Stoddart', predictions: ['Manchester United', 'Liverpool', 'Everton', 'Chelsea'] },
-  { id: 'b', name: 'Garry McMahon' }
-];
 
 const teams = [
   { id:1, name:'Manchester United' },
@@ -33,9 +31,19 @@ const teams = [
   { id:4, name:'Chelsea' }
 ]; 
 
+
+// Maps id to User object
+const users = [ 
+  { id: 'a', name: 'Andrew Stoddart', predictions: [teams[0], teams[3]], email: 'andy_stoddart@hotmail.com', telephone: '0876471817' },
+  { id: 'b', name: 'Garry McMahon' }
+];
+
 var root = {
   user: function ({id}) {
     return users.find(user => user.id = id);
+  },
+  team: function ({id}) {
+    return teams.find(team => team.id = id);
   }
 };
 
