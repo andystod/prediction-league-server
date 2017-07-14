@@ -31,16 +31,24 @@ const teams = [
   { id:4, name:'Chelsea' }
 ]; 
 
-
 // Maps id to User object
 const users = [ 
-  { id: 'a', name: 'Andrew Stoddart', predictions: [teams[0], teams[3]], email: 'andy_stoddart@hotmail.com', telephone: '0876471817' },
+  { id: 'a', name: 'Andrew Stoddart', predictions: [1, 2], email: 'andy_stoddart@hotmail.com', telephone: '0876471817' },
   { id: 'b', name: 'Garry McMahon' }
 ];
 
 var root = {
   user: function ({id}) {
-    return users.find(user => user.id = id);
+    return users.find(function(user) {
+      if (user.id === id) {
+        user.predictions = user.predictions.map(prediction => {
+          console.log(prediction);
+          return teams.find(team => team.id === prediction)
+          
+        })
+        return user;
+      }
+    })
   },
   team: function ({id}) {
     return teams.find(team => team.id = id);
