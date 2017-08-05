@@ -1,7 +1,7 @@
 var express = require('express');
 var graphqlHTTP = require('express-graphql');
 var { buildSchema } = require('graphql');
-
+var cors = require('cors')
 
 var schema = buildSchema(`
   type User {
@@ -83,7 +83,17 @@ var root = {
   }
 };
 
-var app = express();
+
+
+var app = express()
+app.use(cors())
+
+app.get('/products/:id', function (req, res, next) {
+  res.json({msg: 'This is CORS-enabled for all origins!'})
+})
+
+
+
 app.use('/graphql', graphqlHTTP({
   schema: schema,
   rootValue: root,

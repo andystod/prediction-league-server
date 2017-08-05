@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/andystod/prediction-league-server#readme",
   "dependencies": {
+    "cors": "^2.8.4",
     "express": "^4.15.3",
     "express-graphql": "^0.6.6",
     "graphql": "^0.10.3"
