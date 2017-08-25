@@ -90,19 +90,47 @@ var root = {
 };
 
 
+var cors = require('cors')
+
+// app.use('*', cors());
+
+
+
+
+
 const app = express();
 
-app.use( body_parser.json({ limit: '50mb' }) );
+app.use('/graphql', function (req, res, next) {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With');
+  if (req.method === 'OPTIONS') {
+    res.sendStatus(200);
+  } else {
+    next();
+  }
+}, 
 
-app.use(
-	'/',
-	expressGraphQL( () => {
+expressGraphQL( () => {
 		return {
 			graphiql: true,
 			schema: schema,
             rootValue: root,
 		}
-	})
-);
+	}));
+
+// app.use( body_parser.json({ limit: '50mb' }) );
+
+// app.options('/graphql', cors())
+
+// app.use(
+// 	'/graphql',
+// 	expressGraphQL( () => {
+// 		return {
+// 			graphiql: true,
+// 			schema: schema,
+//             rootValue: root,
+// 		}
+// 	})
+// );
 
 module.exports = app;

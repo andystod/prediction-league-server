@@ -1,11 +1,12 @@
 
-var cors = require('cors')
-'use strict';
 
 const app = require('./src/app');
 
+
+
+
 // let's set the port on which the server will run
-app.set( 'port', 1337 );
+app.set( 'port', 4000 );
 
 
 // start the server
