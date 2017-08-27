@@ -11,11 +11,28 @@ const expressGraphQL = require('express-graphql');
 
 var schema = buildSchema(`
   type User {
-    id: String
-    name: String
-    predictions: [Team]
-    email: String
+    id: String,
+    name: String,
+    predictions: [Prediction],
+    email: String,
     telephone: String
+  }
+
+  type Prediction {
+    match: Match,
+    pick: Team,
+    points: Int
+  }
+
+  type Match {
+    home: Team,
+    away: Team,
+    score: Score
+  }
+
+  type Score {
+    home: String,
+    away: String
   }
 
   type Team {
@@ -41,28 +58,56 @@ var schema = buildSchema(`
 
 
 const teams = [
-  { id: 1, name: 'Manchester United' },
-  { id: 2, name: 'Liverpool' },
-  { id: 3, name: 'Everton' },
-  { id: 4, name: 'Chelsea' }
+  { id: 1, name: 'AFC Bournemouth' },
+  { id: 2, name: 'Arsenal' },
+  { id: 3, name: 'Brighton & Hove Albion' },
+  { id: 4, name: 'Burnley' },
+  { id: 5, name: 'Chelsea' },
+  { id: 6, name: 'Crystal Palace' },
+  { id: 7, name: 'Everton' },
+  { id: 8, name: 'Huddersfield Town' },
+  { id: 9, name: 'Leicester City' },
+  { id: 10, name: 'Liverpool' },
+  { id: 11, name: 'Manchester City' },
+  { id: 12, name: 'Manchester United' },
+  { id: 13, name: 'Newcastle United' },
+  { id: 14, name: 'Southampton' },
+  { id: 15, name: 'Stoke City' },
+  { id: 16, name: 'Swansea City' },
+  { id: 17, name: 'Tottenham Hotspur' },
+  { id: 18, name: 'Watford' },
+  { id: 19, name: 'West Bromwich Albion' },
+  { id: 20, name: 'West Ham United' }
 ];
 
 console.log(teams[0]);
 console.log([teams[0], teams[1]]);
 
+const match1 = {
+  home: teams[4],
+  away: teams[13],
+  score: {home: "2", away: "3"}
+};
+
+const prediction = {
+  match: match1,
+  pick: teams[4],
+  points: 2
+}
+
 // Maps id to User object
 const users = [
-  { id: 'a', name: 'Andrew Stoddart', predictions: [teams[0], teams[3]], email: 'andystod@hotmail.com', telephone: '08753543534' },
-  { id: 'b', name: 'Garry McMahon', predictions: [teams[1], teams[2]], email: 'gmac@hotmail.com', telephone: '03123123123' },
-  { id: 'b', name: 'Cormac Fagan', predictions: [teams[3], teams[0]], email: 'cormacfagan@hotmail.com', telephone: '031233333123' },
-  { id: 'b', name: 'Enda McElhiney', predictions: [teams[3], teams[2]], email: 'endamac@hotmail.com', telephone: '03123122223' }
+  { id: 'a', name: 'Andrew Stoddart', predictions: [prediction, prediction, prediction, prediction, prediction, prediction, prediction, prediction, prediction], email: 'andystod@hotmail.com', telephone: '08753543534' },
+  { id: 'b', name: 'Garry McMahon', predictions: [teams[17], teams[12], teams[13], teams[3], teams[0], teams[5], teams[7], teams[11], teams[12]], email: 'gmac@hotmail.com', telephone: '03123123123' },
+  { id: 'c', name: 'Cormac Fagan', predictions: [teams[13], teams[10], teams[4], teams[9], teams[12], teams[7], teams[8], teams[9], teams[15]], email: 'cormacfagan@hotmail.com', telephone: '031233333123' },
+  { id: 'd', name: 'Enda McElhiney', predictions: [teams[8], teams[2], teams[14], teams[17], teams[9], teams[6], teams[5], teams[3], teams[12]], email: 'endamac@hotmail.com', telephone: '03123122223' }
 ];
 
 const tableRows = [
   { id: 'a', user: users[0], gameweekPick: teams[0], gameweekPoints: 3, totalPoints: 6, position: 1 },
-  { id: 'b', user: users[1], gameweekPick: teams[2], gameweekPoints: 2, totalPoints: 5, position: 2 },
-  { id: 'c', user: users[2], gameweekPick: teams[3], gameweekPoints: 0, totalPoints: 3, position: 3 },
-  { id: 'd', user: users[3], gameweekPick: teams[3], gameweekPoints: 0, totalPoints: 3, position: 3 }];
+  { id: 'b', user: users[1], gameweekPick: teams[12], gameweekPoints: 2, totalPoints: 5, position: 2 },
+  { id: 'c', user: users[2], gameweekPick: teams[13], gameweekPoints: 0, totalPoints: 3, position: 3 },
+  { id: 'd', user: users[3], gameweekPick: teams[19], gameweekPoints: 0, totalPoints: 3, position: 3 }];
 
 
 var root = {
@@ -95,21 +140,18 @@ var cors = require('cors')
 // app.use('*', cors());
 
 
-
-
-
 const app = express();
 
-app.use('/graphql', function (req, res, next) {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With');
-  if (req.method === 'OPTIONS') {
-    res.sendStatus(200);
-  } else {
-    next();
-  }
-}, 
+app.use(cors())
 
+// app.get('/products/:id', function (req, res, next) {
+//   res.json({msg: 'This is CORS-enabled for all origins!'})
+// })
+
+
+
+
+app.use('/graphql', 
 expressGraphQL( () => {
 		return {
 			graphiql: true,
