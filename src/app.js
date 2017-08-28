@@ -89,15 +89,39 @@ const match1 = {
   score: {home: "2", away: "3"}
 };
 
-const prediction = {
+const match2 = {
+  home: teams[5],
+  away: teams[17],
+  score: {home: "1", away: "0"}
+};
+
+const match3 = {
+  home: teams[15],
+  away: teams[1],
+  score: {home: "1", away: "1"}
+};
+
+const prediction1 = {
   match: match1,
-  pick: teams[4],
+  pick: teams[13],
+  points: 3
+}
+
+const prediction2 = {
+  match: match2,
+  pick: teams[5],
   points: 2
+}
+
+const prediction3 = {
+  match: match3,
+  pick: teams[1],
+  points: 1
 }
 
 // Maps id to User object
 const users = [
-  { id: 'a', name: 'Andrew Stoddart', predictions: [prediction, prediction, prediction, prediction, prediction, prediction, prediction, prediction, prediction], email: 'andystod@hotmail.com', telephone: '08753543534' },
+  { id: 'a', name: 'Andrew Stoddart', predictions: [prediction1, prediction2, prediction3, prediction1, prediction3, prediction2, prediction1, prediction2, prediction3], email: 'andystod@hotmail.com', telephone: '08753543534' },
   { id: 'b', name: 'Garry McMahon', predictions: [teams[17], teams[12], teams[13], teams[3], teams[0], teams[5], teams[7], teams[11], teams[12]], email: 'gmac@hotmail.com', telephone: '03123123123' },
   { id: 'c', name: 'Cormac Fagan', predictions: [teams[13], teams[10], teams[4], teams[9], teams[12], teams[7], teams[8], teams[9], teams[15]], email: 'cormacfagan@hotmail.com', telephone: '031233333123' },
   { id: 'd', name: 'Enda McElhiney', predictions: [teams[8], teams[2], teams[14], teams[17], teams[9], teams[6], teams[5], teams[3], teams[12]], email: 'endamac@hotmail.com', telephone: '03123122223' }
