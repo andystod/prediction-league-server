@@ -119,12 +119,14 @@ const prediction3 = {
   points: 1
 }
 
+const predictions = [prediction1, prediction2, prediction3, prediction1, prediction3, prediction2, prediction1, prediction2, prediction3];
+
 // Maps id to User object
 const users = [
-  { id: 'a', name: 'Andrew Stoddart', predictions: [prediction1, prediction2, prediction3, prediction1, prediction3, prediction2, prediction1, prediction2, prediction3], email: 'andystod@hotmail.com', telephone: '08753543534' },
-  { id: 'b', name: 'Garry McMahon', predictions: [teams[17], teams[12], teams[13], teams[3], teams[0], teams[5], teams[7], teams[11], teams[12]], email: 'gmac@hotmail.com', telephone: '03123123123' },
-  { id: 'c', name: 'Cormac Fagan', predictions: [teams[13], teams[10], teams[4], teams[9], teams[12], teams[7], teams[8], teams[9], teams[15]], email: 'cormacfagan@hotmail.com', telephone: '031233333123' },
-  { id: 'd', name: 'Enda McElhiney', predictions: [teams[8], teams[2], teams[14], teams[17], teams[9], teams[6], teams[5], teams[3], teams[12]], email: 'endamac@hotmail.com', telephone: '03123122223' }
+  { id: 'a', name: 'Andrew Stoddart', predictions: predictions, email: 'andystod@hotmail.com', telephone: '08753543534' },
+  { id: 'b', name: 'Garry McMahon', predictions: predictions, email: 'gmac@hotmail.com', telephone: '03123123123' },
+  { id: 'c', name: 'Cormac Fagan', predictions: predictions, email: 'cormacfagan@hotmail.com', telephone: '031233333123' },
+  { id: 'd', name: 'Enda McElhiney', predictions: predictions, email: 'endamac@hotmail.com', telephone: '03123122223' }
 ];
 
 const tableRows = [
