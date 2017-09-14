@@ -40,7 +40,7 @@ var schema = buildSchema(`
     name: String
   }
 
-  type TableRow {
+  type LeagueTableRow {
     id: String,
     user: User,
     gameweekPick: Team,
@@ -49,11 +49,37 @@ var schema = buildSchema(`
     position: Int
   }
 
+
+
+interface Node {
+  id: ID!
+}
+
+  type LeagueTableConnection {
+  pageInfo: PageInfo
+  edges: [LeagueTableEdge]
+}
+type LeagueTableEdge {
+  node: LeagueTableRow!
+  cursor: ID!
+}
+type PageInfo {
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+}
+type LeagueTable implements Node {
+  id: ID!
+  leagueTableRows(first: Int, last: Int, before: ID, after: ID): LeagueTableConnection
+}
+
+
   type Query {
     user(id: String): User,
     team(id: String): Team,
-    table: [TableRow]
+    leagueTable: LeagueTable,
+    node(id: ID!): Node
   }
+
 `);
 
 
@@ -157,6 +183,12 @@ var root = {
     console.log(tableRows);
     console.log(tableRows.length);
     return tableRows;
+  },
+  leagueTable: function() {
+    console.log('here1');
+    console.log(tableRows);
+    console.log(tableRows.length);
+    return 1;
   }
 };
 
