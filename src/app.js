@@ -4,15 +4,18 @@ const express = require('express');
 const body_parser = require('body-parser');
 var { buildSchema } = require('graphql');
 const expressGraphQL = require('express-graphql');
+var { makeExecutableSchema } = require('graphql-tools');
 
 // mongouser
 // mOGr5qfWyvwkCPnw
 
 
-var schema = buildSchema(`
+var typeDefs = `
+  # User type
   type User {
     id: String,
     name: String,
+    # Predictions picked by user
     predictions: [Prediction],
     email: String,
     telephone: String
@@ -36,7 +39,7 @@ var schema = buildSchema(`
   }
 
   type Team {
-    id: String
+    id: ID!
     name: String
   }
 
@@ -75,35 +78,35 @@ type LeagueTable implements Node {
 
   type Query {
     user(id: String): User,
-    team(id: String): Team,
+    team(id: ID!): Team,
     leagueTable: LeagueTable,
     node(id: ID!): Node
   }
 
-`);
+`;
 
 
 const teams = [
-  { id: 1, name: 'AFC Bournemouth' },
-  { id: 2, name: 'Arsenal' },
-  { id: 3, name: 'Brighton & Hove Albion' },
-  { id: 4, name: 'Burnley' },
-  { id: 5, name: 'Chelsea' },
-  { id: 6, name: 'Crystal Palace' },
-  { id: 7, name: 'Everton' },
-  { id: 8, name: 'Huddersfield Town' },
-  { id: 9, name: 'Leicester City' },
-  { id: 10, name: 'Liverpool' },
-  { id: 11, name: 'Manchester City' },
-  { id: 12, name: 'Manchester United' },
-  { id: 13, name: 'Newcastle United' },
-  { id: 14, name: 'Southampton' },
-  { id: 15, name: 'Stoke City' },
-  { id: 16, name: 'Swansea City' },
-  { id: 17, name: 'Tottenham Hotspur' },
-  { id: 18, name: 'Watford' },
-  { id: 19, name: 'West Bromwich Albion' },
-  { id: 20, name: 'West Ham United' }
+  { id: "1", name: 'AFC Bournemouth' },
+  { id: "2", name: 'Arsenal' },
+  { id: "3", name: 'Brighton & Hove Albion' },
+  { id: "4", name: 'Burnley' },
+  { id: "5", name: 'Chelsea' },
+  { id: "6", name: 'Crystal Palace' },
+  { id: "7", name: 'Everton' },
+  { id: "8", name: 'Huddersfield Town' },
+  { id: "9", name: 'Leicester City' },
+  { id: "10", name: 'Liverpool' },
+  { id: "11", name: 'Manchester City' },
+  { id: "12", name: 'Manchester United' },
+  { id: "13", name: 'Newcastle United' },
+  { id: "14", name: 'Southampton' },
+  { id: "15", name: 'Stoke City' },
+  { id: "16", name: 'Swansea City' },
+  { id: "17", name: 'Tottenham Hotspur' },
+  { id: "18", name: 'Watford' },
+  { id: "19", name: 'West Bromwich Albion' },
+  { id: "20", name: 'West Ham United' }
 ];
 
 console.log(teams[0]);
@@ -146,6 +149,7 @@ const prediction3 = {
 }
 
 const predictions = [prediction1, prediction2, prediction3, prediction1, prediction3, prediction2, prediction1, prediction2, prediction3];
+const predictionsDeleteMe = [prediction1, prediction2];
 
 // Maps id to User object
 const users = [
@@ -162,35 +166,74 @@ const tableRows = [
   { id: 'd', user: users[3], gameweekPick: teams[19], gameweekPoints: 0, totalPoints: 3, position: 3 }];
 
 
-var root = {
-  user: function ({ id }) {
-    return users.find(function (user) {
-      if (user.id === id) {
-        // user.predictions = user.predictions.map(prediction => {
-        //   console.log(prediction);
-        //   return teams.find(team => team.id === prediction)
+// var root = {
+//   user: function ({ id }) {
+//     return users.find(function (user) {
+//       if (user.id === id) {
+//         // user.predictions = user.predictions.map(prediction => {
+//         //   console.log(prediction);
+//         //   return teams.find(team => team.id === prediction)
 
-        // })
-        return user;
-      }
-    })
+//         // })
+//         return user;
+//       }
+//     })
+//   },
+//   team: function ({ id }) {
+//     return teams.find(team => team.id = id);
+//   },
+//   table: function() {
+//     console.log('here1');
+//     console.log(tableRows);
+//     console.log(tableRows.length);
+//     return tableRows;
+//   },
+//   leagueTable: function() {
+//     console.log('here1');
+//     console.log(tableRows);
+//     console.log(tableRows.length);
+//     return tableRows;
+//   }
+// };
+
+
+const resolvers = {
+  Query: {
+    user: (_, { id }) => 
+      users.find(function (user) {
+        if (user.id === id) {
+          // user.predictions = user.predictions.map(prediction => {
+          //   console.log(prediction);
+          //   return teams.find(team => team.id === prediction)
+
+          // })
+          return user;
+        }
+      }),
+
+      team: (_, { id }) =>
+        teams.find(team => team.id = id),
+      
+
+
   },
-  team: function ({ id }) {
-    return teams.find(team => team.id = id);
+  User: {
+    predictions:() => predictionsDeleteMe,
   },
-  table: function() {
-    console.log('here1');
-    console.log(tableRows);
-    console.log(tableRows.length);
-    return tableRows;
-  },
-  leagueTable: function() {
-    console.log('here1');
-    console.log(tableRows);
-    console.log(tableRows.length);
-    return 1;
-  }
+  
 };
+
+
+
+
+
+
+
+const schema = makeExecutableSchema({
+  typeDefs,
+  resolvers,
+});
+
 
 
 var cors = require('cors')
