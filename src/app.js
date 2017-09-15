@@ -166,60 +166,30 @@ const tableRows = [
   { id: 'd', user: users[3], gameweekPick: teams[19], gameweekPoints: 0, totalPoints: 3, position: 3 }];
 
 
-// var root = {
-//   user: function ({ id }) {
-//     return users.find(function (user) {
-//       if (user.id === id) {
-//         // user.predictions = user.predictions.map(prediction => {
-//         //   console.log(prediction);
-//         //   return teams.find(team => team.id === prediction)
-
-//         // })
-//         return user;
-//       }
-//     })
-//   },
-//   team: function ({ id }) {
-//     return teams.find(team => team.id = id);
-//   },
-//   table: function() {
-//     console.log('here1');
-//     console.log(tableRows);
-//     console.log(tableRows.length);
-//     return tableRows;
-//   },
-//   leagueTable: function() {
-//     console.log('here1');
-//     console.log(tableRows);
-//     console.log(tableRows.length);
-//     return tableRows;
-//   }
-// };
-
-
 const resolvers = {
   Query: {
     user: (_, { id }) => 
-      users.find(function (user) {
-        if (user.id === id) {
-          // user.predictions = user.predictions.map(prediction => {
-          //   console.log(prediction);
-          //   return teams.find(team => team.id === prediction)
-
-          // })
-          return user;
-        }
-      }),
+      users.find(user => user.id === id),
 
       team: (_, { id }) =>
-        teams.find(team => team.id = id),
+        teams.find(team => team.id === id),
       
-
+      leagueTable: () =>
+        {
+          console.log('here1');
+          console.log(tableRows);
+          console.log(tableRows.length);
+          return tableRows;
+      },
 
   },
   User: {
     predictions:() => predictionsDeleteMe,
   },
+  LeagueTable: {
+    id:() => '123', 
+    leagueTableRows:() => null
+  }
   
 };
 
