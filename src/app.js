@@ -5,6 +5,7 @@ const body_parser = require('body-parser');
 var { buildSchema } = require('graphql');
 const expressGraphQL = require('express-graphql');
 var { makeExecutableSchema } = require('graphql-tools');
+const { connectionFromArray } = require('graphql-relay');
 
 // mongouser
 // mOGr5qfWyvwkCPnw
@@ -163,7 +164,35 @@ const tableRows = [
   { id: 'a', user: users[0], gameweekPick: teams[0], gameweekPoints: 3, totalPoints: 6, position: 1 },
   { id: 'b', user: users[1], gameweekPick: teams[12], gameweekPoints: 2, totalPoints: 5, position: 2 },
   { id: 'c', user: users[2], gameweekPick: teams[13], gameweekPoints: 0, totalPoints: 3, position: 3 },
-  { id: 'd', user: users[3], gameweekPick: teams[19], gameweekPoints: 0, totalPoints: 3, position: 3 }];
+  { id: 'd', user: users[3], gameweekPick: teams[19], gameweekPoints: 0, totalPoints: 3, position: 4 },
+  { id: 'a', user: users[0], gameweekPick: teams[0], gameweekPoints: 3, totalPoints: 6, position: 5 },
+  { id: 'b', user: users[1], gameweekPick: teams[12], gameweekPoints: 2, totalPoints: 5, position: 6 },
+  { id: 'c', user: users[2], gameweekPick: teams[13], gameweekPoints: 0, totalPoints: 3, position: 7 },
+  { id: 'd', user: users[3], gameweekPick: teams[19], gameweekPoints: 0, totalPoints: 3, position: 8 },
+  { id: 'a', user: users[0], gameweekPick: teams[0], gameweekPoints: 3, totalPoints: 6, position: 9 },
+  { id: 'b', user: users[1], gameweekPick: teams[12], gameweekPoints: 2, totalPoints: 5, position: 10 },
+  { id: 'c', user: users[2], gameweekPick: teams[13], gameweekPoints: 0, totalPoints: 3, position: 11 },
+  { id: 'd', user: users[3], gameweekPick: teams[19], gameweekPoints: 0, totalPoints: 3, position: 12 },
+  { id: 'a', user: users[0], gameweekPick: teams[0], gameweekPoints: 3, totalPoints: 6, position: 13 },
+  { id: 'b', user: users[1], gameweekPick: teams[12], gameweekPoints: 2, totalPoints: 5, position: 14 },
+  { id: 'c', user: users[2], gameweekPick: teams[13], gameweekPoints: 0, totalPoints: 3, position: 15 },
+  { id: 'd', user: users[3], gameweekPick: teams[19], gameweekPoints: 0, totalPoints: 3, position: 16 },
+  { id: 'a', user: users[0], gameweekPick: teams[0], gameweekPoints: 3, totalPoints: 6, position: 17 },
+  { id: 'b', user: users[1], gameweekPick: teams[12], gameweekPoints: 2, totalPoints: 5, position: 18 },
+  { id: 'c', user: users[2], gameweekPick: teams[13], gameweekPoints: 0, totalPoints: 3, position: 19 },
+  { id: 'd', user: users[3], gameweekPick: teams[19], gameweekPoints: 0, totalPoints: 3, position: 20 },
+  { id: 'a', user: users[0], gameweekPick: teams[0], gameweekPoints: 3, totalPoints: 6, position: 21 },
+  { id: 'b', user: users[1], gameweekPick: teams[12], gameweekPoints: 2, totalPoints: 5, position: 22 },
+  { id: 'c', user: users[2], gameweekPick: teams[13], gameweekPoints: 0, totalPoints: 3, position: 23 },
+  { id: 'd', user: users[3], gameweekPick: teams[19], gameweekPoints: 0, totalPoints: 3, position: 24 },
+  { id: 'a', user: users[0], gameweekPick: teams[0], gameweekPoints: 3, totalPoints: 6, position: 25 },
+  { id: 'b', user: users[1], gameweekPick: teams[12], gameweekPoints: 2, totalPoints: 5, position: 26 },
+  { id: 'c', user: users[2], gameweekPick: teams[13], gameweekPoints: 0, totalPoints: 3, position: 27 },
+  { id: 'd', user: users[3], gameweekPick: teams[19], gameweekPoints: 0, totalPoints: 3, position: 28 },
+  { id: 'a', user: users[0], gameweekPick: teams[0], gameweekPoints: 3, totalPoints: 6, position: 29 },
+  { id: 'b', user: users[1], gameweekPick: teams[12], gameweekPoints: 2, totalPoints: 5, position: 30 },
+  { id: 'c', user: users[2], gameweekPick: teams[13], gameweekPoints: 0, totalPoints: 3, position: 31 },
+  { id: 'd', user: users[3], gameweekPick: teams[19], gameweekPoints: 0, totalPoints: 3, position: 32 }];
 
 
 const resolvers = {
@@ -188,9 +217,11 @@ const resolvers = {
   },
   LeagueTable: {
     id:() => '123', 
-    leagueTableRows:() => null
+    leagueTableRows: (leagueTable, args) => connectionFromArray(
+        tableRows,
+        args
+    )
   }
-  
 };
 
 
