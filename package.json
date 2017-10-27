@@ -17,13 +17,16 @@
   },
   "homepage": "https://github.com/andystod/prediction-league-server#readme",
   "dependencies": {
+    "bluebird": "^3.5.1",
     "body-parser": "^1.18.1",
     "cors": "^2.8.4",
+    "dotenv": "^4.0.0",
     "dynamoose": "^0.8.6",
     "express": "^4.15.3",
     "express-graphql": "^0.6.6",
     "graphql": "^0.10.3",
     "graphql-relay": "^0.5.2",
-    "graphql-tools": "^1.2.2"
+    "graphql-tools": "^1.2.2",
+    "proxy-agent": "^2.1.0"
   }
 }

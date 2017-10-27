@@ -6,6 +6,7 @@ var { buildSchema } = require('graphql');
 const expressGraphQL = require('express-graphql');
 var { makeExecutableSchema } = require('graphql-tools');
 const { connectionFromArray } = require('graphql-relay');
+const dynamodb = require('./dynamodb');
 
 // mongouser
 // mOGr5qfWyvwkCPnw
@@ -43,8 +44,7 @@ var typeDefs = `
     id: ID!
     name: String
   }
-
-  type LeagueTableRow {
+  type Entry {
     id: String,
     user: User,
     gameweekPick: Team,
@@ -56,7 +56,7 @@ var typeDefs = `
 
 type LeagueTable {
   id: ID!
-  leagueTableRows: [LeagueTableRow]
+  entries: [Entry]
 }
 
 
@@ -142,7 +142,7 @@ const users = [
   { id: 'd', name: 'Enda McElhiney', predictions: predictions, email: 'endamac@hotmail.com', telephone: '03123122223' }
 ];
 
-const tableRows = [
+const entries = [
   { id: 'a', user: users[0], gameweekPick: teams[0], gameweekPoints: 3, totalPoints: 6, position: 1 },
   { id: 'b', user: users[1], gameweekPick: teams[12], gameweekPoints: 2, totalPoints: 5, position: 2 },
   { id: 'c', user: users[2], gameweekPick: teams[13], gameweekPoints: 0, totalPoints: 3, position: 3 },
@@ -187,8 +187,10 @@ const resolvers = {
       
       leagueTable: () =>
         {
-          console.log(tableRows);
-          return tableRows;
+          console.log('a');
+          var entries = dynamodb.getEntries();
+          console.log(entries);
+          return entries;
       },
 
   },
@@ -197,7 +199,10 @@ const resolvers = {
   },
   LeagueTable: {
     id:() => '123',
-    leagueTableRows:() => tableRows
+    entries:() => {
+      console.log('b');
+      return dynamodb.getEntries();
+    }
   }
 };
 
