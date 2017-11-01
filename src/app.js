@@ -17,21 +17,19 @@ var typeDefs = `
   type User {
     id: String,
     name: String,
-    # Predictions picked by user
-    predictions: [Prediction],
     email: String,
     telephone: String
   }
 
   type Prediction {
     match: Match,
-    pick: Team,
+    pick: String,
     points: Int
   }
 
   type Match {
-    home: Team,
-    away: Team,
+    home: String,
+    away: String,
     score: Score
   }
 
@@ -39,18 +37,16 @@ var typeDefs = `
     home: String,
     away: String
   }
-
-  type Team {
-    id: ID!
-    name: String
-  }
   type Entry {
     id: String,
-    user: User,
-    gameweekPick: Team,
+    user: User, 
+    tablePosition: Int
+    leaguePosition: Int
+    gameweekPick: String,
     gameweekPoints: Int,
     totalPoints: Int,
-    position: Int
+    # Predictions picked by user
+    predictions: [Prediction],
   }
 
 
@@ -61,8 +57,8 @@ type LeagueTable {
 
 
   type Query {
-    user(id: String): User,
-    team(id: ID!): Team,
+    entry(id: String): Entry,
+    #team(id: ID!): Team,
     leagueTable: LeagueTable
   }
 
@@ -70,26 +66,26 @@ type LeagueTable {
 
 
 const teams = [
-  { id: "1", name: 'AFC Bournemouth' },
-  { id: "2", name: 'Arsenal' },
-  { id: "3", name: 'Brighton & Hove Albion' },
-  { id: "4", name: 'Burnley' },
-  { id: "5", name: 'Chelsea' },
-  { id: "6", name: 'Crystal Palace' },
-  { id: "7", name: 'Everton' },
-  { id: "8", name: 'Huddersfield Town' },
-  { id: "9", name: 'Leicester City' },
-  { id: "10", name: 'Liverpool' },
-  { id: "11", name: 'Manchester City' },
-  { id: "12", name: 'Manchester United' },
-  { id: "13", name: 'Newcastle United' },
-  { id: "14", name: 'Southampton' },
-  { id: "15", name: 'Stoke City' },
-  { id: "16", name: 'Swansea City' },
-  { id: "17", name: 'Tottenham Hotspur' },
-  { id: "18", name: 'Watford' },
-  { id: "19", name: 'West Bromwich Albion' },
-  { id: "20", name: 'West Ham United' }
+  'AFC Bournemouth',
+  'Arsenal',
+  'Brighton & Hove Albion',
+  'Burnley',
+  'Chelsea',
+  'Crystal Palace',
+  'Everton',
+  'Huddersfield Town',
+  'Leicester City',
+  'Liverpool',
+  'Manchester City',
+  'Manchester United',
+  'Newcastle United',
+  'Southampton',
+  'Stoke City',
+  'Swansea City',
+  'Tottenham Hotspur',
+  'Watford',
+  'West Bromwich Albion',
+  'West Ham United'
 ];
 
 console.log(teams[0]);
@@ -98,19 +94,19 @@ console.log([teams[0], teams[1]]);
 const match1 = {
   home: teams[4],
   away: teams[13],
-  score: {home: "2", away: "3"}
+  score: { home: "2", away: "3" }
 };
 
 const match2 = {
   home: teams[5],
   away: teams[17],
-  score: {home: "1", away: "0"}
+  score: { home: "1", away: "0" }
 };
 
 const match3 = {
   home: teams[15],
   away: teams[1],
-  score: {home: "1", away: "1"}
+  score: { home: "1", away: "1" }
 };
 
 const prediction1 = {
@@ -136,70 +132,38 @@ const predictionsDeleteMe = [prediction1, prediction2];
 
 // Maps id to User object
 const users = [
-  { id: 'a', name: 'Andrew Stoddart', predictions: predictions, email: 'andystod@hotmail.com', telephone: '08753543534' },
-  { id: 'b', name: 'Garry McMahon', predictions: predictions, email: 'gmac@hotmail.com', telephone: '03123123123' },
-  { id: 'c', name: 'Cormac Fagan', predictions: predictions, email: 'cormacfagan@hotmail.com', telephone: '031233333123' },
-  { id: 'd', name: 'Enda McElhiney', predictions: predictions, email: 'endamac@hotmail.com', telephone: '03123122223' }
+  { id: 'a', name: 'Andrew Stoddart', email: 'andystod@hotmail.com', telephone: '08753543534' },
+  { id: 'b', name: 'Garry McMahon', email: 'gmac@hotmail.com', telephone: '03123123123' },
+  { id: 'c', name: 'Cormac Fagan', email: 'cormacfagan@hotmail.com', telephone: '031233333123' },
+  { id: 'd', name: 'Enda McElhiney', email: 'endamac@hotmail.com', telephone: '03123122223' }
 ];
 
 const entries = [
-  { id: 'a', user: users[0], gameweekPick: teams[0], gameweekPoints: 3, totalPoints: 6, position: 1 },
-  { id: 'b', user: users[1], gameweekPick: teams[12], gameweekPoints: 2, totalPoints: 5, position: 2 },
-  { id: 'c', user: users[2], gameweekPick: teams[13], gameweekPoints: 0, totalPoints: 3, position: 3 },
-  { id: 'd', user: users[3], gameweekPick: teams[19], gameweekPoints: 0, totalPoints: 3, position: 4 }];
-  // { id: 'a', user: users[0], gameweekPick: teams[0], gameweekPoints: 3, totalPoints: 6, position: 5 },
-  // { id: 'b', user: users[1], gameweekPick: teams[12], gameweekPoints: 2, totalPoints: 5, position: 6 },
-  // { id: 'c', user: users[2], gameweekPick: teams[13], gameweekPoints: 0, totalPoints: 3, position: 7 },
-  // { id: 'd', user: users[3], gameweekPick: teams[19], gameweekPoints: 0, totalPoints: 3, position: 8 },
-  // { id: 'a', user: users[0], gameweekPick: teams[0], gameweekPoints: 3, totalPoints: 6, position: 9 },
-  // { id: 'b', user: users[1], gameweekPick: teams[12], gameweekPoints: 2, totalPoints: 5, position: 10 },
-  // { id: 'c', user: users[2], gameweekPick: teams[13], gameweekPoints: 0, totalPoints: 3, position: 11 },
-  // { id: 'd', user: users[3], gameweekPick: teams[19], gameweekPoints: 0, totalPoints: 3, position: 12 },
-  // { id: 'a', user: users[0], gameweekPick: teams[0], gameweekPoints: 3, totalPoints: 6, position: 13 },
-  // { id: 'b', user: users[1], gameweekPick: teams[12], gameweekPoints: 2, totalPoints: 5, position: 14 },
-  // { id: 'c', user: users[2], gameweekPick: teams[13], gameweekPoints: 0, totalPoints: 3, position: 15 },
-  // { id: 'd', user: users[3], gameweekPick: teams[19], gameweekPoints: 0, totalPoints: 3, position: 16 },
-  // { id: 'a', user: users[0], gameweekPick: teams[0], gameweekPoints: 3, totalPoints: 6, position: 17 },
-  // { id: 'b', user: users[1], gameweekPick: teams[12], gameweekPoints: 2, totalPoints: 5, position: 18 },
-  // { id: 'c', user: users[2], gameweekPick: teams[13], gameweekPoints: 0, totalPoints: 3, position: 19 },
-  // { id: 'd', user: users[3], gameweekPick: teams[19], gameweekPoints: 0, totalPoints: 3, position: 20 },
-  // { id: 'a', user: users[0], gameweekPick: teams[0], gameweekPoints: 3, totalPoints: 6, position: 21 },
-  // { id: 'b', user: users[1], gameweekPick: teams[12], gameweekPoints: 2, totalPoints: 5, position: 22 },
-  // { id: 'c', user: users[2], gameweekPick: teams[13], gameweekPoints: 0, totalPoints: 3, position: 23 },
-  // { id: 'd', user: users[3], gameweekPick: teams[19], gameweekPoints: 0, totalPoints: 3, position: 24 },
-  // { id: 'a', user: users[0], gameweekPick: teams[0], gameweekPoints: 3, totalPoints: 6, position: 25 },
-  // { id: 'b', user: users[1], gameweekPick: teams[12], gameweekPoints: 2, totalPoints: 5, position: 26 },
-  // { id: 'c', user: users[2], gameweekPick: teams[13], gameweekPoints: 0, totalPoints: 3, position: 27 },
-  // { id: 'd', user: users[3], gameweekPick: teams[19], gameweekPoints: 0, totalPoints: 3, position: 28 },
-  // { id: 'a', user: users[0], gameweekPick: teams[0], gameweekPoints: 3, totalPoints: 6, position: 29 },
-  // { id: 'b', user: users[1], gameweekPick: teams[12], gameweekPoints: 2, totalPoints: 5, position: 30 },
-  // { id: 'c', user: users[2], gameweekPick: teams[13], gameweekPoints: 0, totalPoints: 3, position: 31 },
-  // { id: 'd', user: users[3], gameweekPick: teams[19], gameweekPoints: 0, totalPoints: 3, position: 32 }];
+  { id: 'a', user: users[0], gameweekPick: teams[0], gameweekPoints: 3, totalPoints: 6, tablePosition: 1, leaguePosition: 1, predictions: predictions },
+  { id: 'b', user: users[1], gameweekPick: teams[12], gameweekPoints: 2, totalPoints: 5, tablePosition: 2, leaguePosition: 2, predictions: predictions },
+  { id: 'c', user: users[2], gameweekPick: teams[13], gameweekPoints: 0, totalPoints: 3, tablePosition: 3, leaguePosition: 3, predictions: predictions },
+  { id: 'd', user: users[3], gameweekPick: teams[19], gameweekPoints: 0, totalPoints: 3, tablePosition: 4, leaguePosition: 3, predictions: predictions }];
 
 
 const resolvers = {
   Query: {
-    user: (_, { id }) => 
-      users.find(user => user.id === id),
+    entry: (_, { id }) =>
+      entries.find(entry => entry.id === id),
 
-      team: (_, { id }) =>
-        teams.find(team => team.id === id),
-      
-      leagueTable: () =>
-        {
-          console.log('a');
-          var entries = dynamodb.getEntries();
-          console.log(entries);
-          return entries;
-      },
+    leagueTable: () => {
+      console.log('a');
+      var entries = dynamodb.getEntries();
+      console.log(entries);
+      return entries;
+    },
 
   },
-  User: {
-    predictions:() => predictionsDeleteMe,
+  Entry: {
+    predictions: () => predictionsDeleteMe,
   },
   LeagueTable: {
-    id:() => '123',
-    entries:() => {
+    id: () => '123',
+    entries: () => {
       console.log('b');
       return dynamodb.getEntries();
     }
@@ -235,14 +199,14 @@ app.use(cors())
 
 
 
-app.use('/graphql', 
-expressGraphQL( () => {
-		return {
-			graphiql: true,
-			schema: schema,
-            rootValue: root,
-		}
-	}));
+app.use('/graphql',
+  expressGraphQL(() => {
+    return {
+      graphiql: true,
+      schema: schema,
+      rootValue: root,
+    }
+  }));
 
 // app.use( body_parser.json({ limit: '50mb' }) );
 
