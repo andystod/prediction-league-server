@@ -40,10 +40,11 @@ var typeDefs = `
   type Entry {
     id: String,
     user: User, 
-    tablePosition: Int
-    leaguePosition: Int
+    sortPosition: Int,
+    leaguePosition: Int,
     gameweekPick: String,
     gameweekPoints: Int,
+    nextGameweekPick: String,
     totalPoints: Int,
     # Predictions picked by user
     predictions: [Prediction],
@@ -106,7 +107,7 @@ const match2 = {
 const match3 = {
   home: teams[15],
   away: teams[1],
-  score: { home: "1", away: "1" }
+  score: { home: "", away: "" }
 };
 
 const prediction1 = {
@@ -124,10 +125,10 @@ const prediction2 = {
 const prediction3 = {
   match: match3,
   pick: teams[1],
-  points: 1
+  points: -1
 }
 
-const predictions = [prediction1, prediction2, prediction3, prediction1, prediction3, prediction2, prediction1, prediction2, prediction3];
+const predictions = [prediction1, prediction2, prediction1, prediction2, prediction2, prediction1, prediction3, prediction3, prediction3];
 const predictionsDeleteMe = [prediction1, prediction2];
 
 // Maps id to User object
@@ -138,34 +139,39 @@ const users = [
   { id: 'd', name: 'Enda McElhiney', email: 'endamac@hotmail.com', telephone: '03123122223' }
 ];
 
+// Wont actually need sort position if don't plan to have sorting on table
+
 const entries = [
-  { id: 'a', user: users[0], gameweekPick: teams[0], gameweekPoints: 3, totalPoints: 6, tablePosition: 1, leaguePosition: 1, predictions: predictions },
-  { id: 'b', user: users[1], gameweekPick: teams[12], gameweekPoints: 2, totalPoints: 5, tablePosition: 2, leaguePosition: 2, predictions: predictions },
-  { id: 'c', user: users[2], gameweekPick: teams[13], gameweekPoints: 0, totalPoints: 3, tablePosition: 3, leaguePosition: 3, predictions: predictions },
-  { id: 'd', user: users[3], gameweekPick: teams[19], gameweekPoints: 0, totalPoints: 3, tablePosition: 4, leaguePosition: 3, predictions: predictions }];
+  { id: 'a', user: users[0], gameweekPick: teams[0], gameweekPoints: 3, nextGameweekPick: teams[8], totalPoints: 16, sortPosition: 1, leaguePosition: 1, predictions: predictions },
+  { id: 'b', user: users[1], gameweekPick: teams[12], gameweekPoints: 2, nextGameweekPick: teams[6], totalPoints: 35, sortPosition: 2, leaguePosition: 2, predictions: predictions },
+  { id: 'c', user: users[2], gameweekPick: teams[13], gameweekPoints: 0, nextGameweekPick: teams[4], totalPoints: 23, sortPosition: 3, leaguePosition: 3, predictions: predictions },
+  { id: 'd', user: users[3], gameweekPick: teams[19], gameweekPoints: 0, nextGameweekPick: teams[2], totalPoints: 30, sortPosition: 4, leaguePosition: 3, predictions: predictions }];
 
 
 const resolvers = {
   Query: {
-    entry: (_, { id }) =>
-      entries.find(entry => entry.id === id),
-
-    leagueTable: () => {
-      console.log('a');
-      var entries = dynamodb.getEntries();
-      console.log(entries);
-      return entries;
+    entry: (_, { id }) => {
+      // var entry = dynamodb.getEntry(id);
+      // console.log(entry);
+      // return entry;
+      return entries.find(entry => entry.id === id);
     },
-
+    leagueTable: () => {
+      // var entries = dynamodb.getEntries();
+      // console.log(entries);
+      // return entries;
+      return { id: '123'};
+    },
   },
   Entry: {
-    predictions: () => predictionsDeleteMe,
+    // predictions: () => predictionsDeleteMe,
   },
   LeagueTable: {
-    id: () => '123',
+    // id: () => '123',
     entries: () => {
-      console.log('b');
-      return dynamodb.getEntries();
+      //return dynamodb.getEntries();
+      // console.log(entries);
+      return entries;
     }
   }
 };

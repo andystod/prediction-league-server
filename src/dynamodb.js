@@ -1,45 +1,31 @@
-//import AWS from 'aws-sdk';
+require('dotenv').config();
 const { Promise } = require('bluebird');
-const dynamoose = require('dynamoose');
-const proxy = require('proxy-agent');
+const AWS = require('aws-sdk');
 
-console.log(process.env.PROXY);
-
-dynamoose.AWS.config.update({
+const dynamoConfig = {
   accessKeyId: process.env.AWS_ACCESS_KEY_ID_DYNAMODB,
   secretAccessKey: process.env.AWS_SECRET_KEY_DYNAMODB,
   region: 'eu-west-1'
-});
+};
 
-var getEntries = function getEntries() {
+const docClient = new AWS.DynamoDB.DocumentClient(dynamoConfig);
 
+// Get single entry
+function getEntry(entryID) {
   return new Promise(function (resolve, reject) {
+    var params = {
+      TableName: 'Entry',
+      Key: { id: entryID }
+    };
 
-    var Entry = dynamoose.model('Entry', { EntryId: { type: String, hashKey: true }, TotalPoints: { type: Number, rangeKey: true } });
+    docClient.get(params, function (err, data) {
+      if (err) return reject(err);
+      return resolve(data["Item"]);
+    });
 
-    console.log('here4');
-
-    Entry.scan().exec().then(function (entries) {
-      console.log(entries);
-      return entries;
-    }).then(function (entries) {
-      if (entries.lastKey) { // More entries to get
-        Entry.scan().startAt(entries.lastKey).exec().then(function (entries) {
-          console.log(entries);
-          return resolve(entries);
-        });
-      }
-      else {
-        return resolve(entries);
-      }
-    })
-      .catch(function (error) {
-        console.log(error);
-        return reject(error);
-      });
   });
 }
 
 module.exports = {
-  getEntries: getEntries
+  getEntry: getEntry
 }
